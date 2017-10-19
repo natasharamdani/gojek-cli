@@ -2,6 +2,7 @@
 require 'json'
 
 module GoCLI
+  # class location
   class Location
     attr_accessor :name, :coord
 
@@ -11,16 +12,14 @@ module GoCLI
     end
 
     def self.load
-      data = JSON.parse(File.read("#{File.expand_path(File.dirname(__FILE__))}/../../data/locations.json"))
+      JSON.parse(File.read("#{File.expand_path(File.dirname(__FILE__))}/../../data/locations.json"))
     end
 
     def self.find(position)
       data = JSON.parse(File.read("#{File.expand_path(File.dirname(__FILE__))}/../../data/locations.json"))
       coordinate = []
       data.each do |loc|
-        if loc.value?(position)
-          coordinate = loc['coord']
-        end
+        coordinate = loc['coord'] if loc.value?(position)
       end
       coordinate
     end

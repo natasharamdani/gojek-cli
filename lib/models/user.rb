@@ -1,10 +1,11 @@
 require 'json'
 
 module GoCLI
+  # class user
   class User
     attr_accessor :name, :email, :phone, :password
 
-    # TODO:
+    # TODO: initialize
     # 1. Add two instance variables: name and email -> DONE!
     # 2. Write all necessary changes, including in other files -> DONE!
     def initialize(opts = {})
@@ -35,8 +36,8 @@ module GoCLI
 
     def save!
       # TODO: Add validation before writing user data to file -> DONE!
-      user = {name: @name, email: @email, phone: @phone, password: @password}
-      File.open("#{File.expand_path(File.dirname(__FILE__))}/../../data/user.json", "w") do |f|
+      user = { name: @name, email: @email, phone: @phone, password: @password }
+      File.open("#{File.expand_path(File.dirname(__FILE__))}/../../data/user.json", 'w') do |f|
         f.write JSON.generate(user)
       end
     end

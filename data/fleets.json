@@ -1,0 +1,5 @@
+[
+	{"type":"gojek","driver":"Budi","location":[1,2]},
+	{"type":"gocar","driver":"Anna","location":[-20,5]},
+	{"type":"gojek","driver":"Umar","location":[20,35]}
+]

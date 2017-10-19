@@ -36,6 +36,7 @@ module GoCLI
         form
 
       else
+        form[:flash_msg] = 'Please fill out all fields'
         registration(opts)
       end
     end
@@ -50,7 +51,7 @@ module GoCLI
         if credential_match?(form[:user], form[:login], form[:password])
           halt = true
         else
-          form[:flash_msg] = "Wrong login or password combination"
+          form[:flash_msg] = 'Wrong login or password combination'
         end
       end
 
@@ -74,7 +75,7 @@ module GoCLI
       when 4
         exit(true)
       else
-        form[:flash_msg] = "Wrong option entered, please retry."
+        form[:flash_msg] = 'Wrong option entered, please retry'
         main_menu(form)
       end
     end
@@ -90,7 +91,7 @@ module GoCLI
       when 2
         main_menu(form)
       else
-        form[:flash_msg] = "Wrong option entered, please retry."
+        form[:flash_msg] = 'Wrong option entered, please retry'
         view_profile(form)
       end
     end
@@ -119,7 +120,7 @@ module GoCLI
         view_profile(form) # discard
 
       else
-        form[:flash_msg] = "Wrong option entered, please retry."
+        form[:flash_msg] = 'Wrong option entered, please retry'
         edit_profile(form)
       end
     end
@@ -128,6 +129,19 @@ module GoCLI
     def order_goride(opts = {})
       clear_screen(opts)
       form = View.order_goride(opts)
+
+      type = ''
+      case form[:steps].last[:option].to_i
+      when 1
+        type = 'gojek'
+      when 2
+        type = 'gocar'
+      when 3
+        main_menu(form)
+      else
+        form[:flash_msg] = 'Wrong option entered, please retry'
+        order_goride(form)
+      end
 
       start = Location.find(form[:origin])
       finish = Location.find(form[:destination])
@@ -145,6 +159,7 @@ module GoCLI
         order_goride_confirm(form)
 
       else
+        form[:flash_msg] = "We're not serving that route yet"
         order_goride(form)
       end
     end
@@ -183,9 +198,10 @@ module GoCLI
 
           order_goride_done(form)
 
-          else
-            order_goride(form)
-          end
+        else
+          form[:flash_msg] = "Sorry we can't find you a driver"
+          order_goride(form)
+        end
 
       when 2
         order_goride(form) # discard
@@ -194,8 +210,8 @@ module GoCLI
         main_menu(form) # back
 
       else
-        form[:flash_msg] = "Wrong option entered, please retry."
-        order_goride(form)
+        form[:flash_msg] = 'Wrong option entered, please retry'
+        order_goride_confirm(form)
       end
     end
 
@@ -207,7 +223,7 @@ module GoCLI
       when 1
         main_menu(form)
       else
-        form[:flash_msg] = "Wrong option entered, please retry."
+        form[:flash_msg] = 'Wrong option entered, please retry'
         order_goride_done(form)
       end
     end
@@ -225,27 +241,28 @@ module GoCLI
       when 1
         main_menu(form)
       else
-        form[:flash_msg] = "Wrong option entered, please retry."
+        form[:flash_msg] = 'Wrong option entered, please retry'
         view_order_history(form)
       end
     end
 
     protected
-      # You don't need to modify this
-      def clear_screen(opts = {})
-        Gem.win_platform? ? (system "cls") : (system "clear")
-        if opts[:flash_msg]
-          puts opts[:flash_msg]
-          puts ''
-          opts[:flash_msg] = nil
-        end
-      end
 
-      # TODO: credential matching with email or phone -> DONE!
-      def credential_match?(user, login, password)
-        return false unless user.email == login || user.phone == login
-        return false unless user.password == password
-        return true
+    # You don't need to modify this
+    def clear_screen(opts = {})
+      Gem.win_platform? ? (system 'cls') : (system 'clear')
+      if opts[:flash_msg]
+        puts opts[:flash_msg]
+        puts ''
+        opts[:flash_msg] = nil
       end
+    end
+
+    # TODO: credential matching with email or phone -> DONE!
+    def credential_match?(user, login, password)
+      false unless user.email == login || user.phone == login
+      false unless user.password == password
+      true
+    end
   end
 end

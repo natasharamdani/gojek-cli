@@ -10,9 +10,6 @@ module GoCLI
       puts 'Registration'
       puts
 
-      puts 'Please fill out all fields'
-      puts
-
       print 'Your name     : '
       form[:name] = gets.chomp
 
@@ -25,7 +22,7 @@ module GoCLI
       print 'Your password : '
       form[:password] = gets.chomp
 
-      form[:steps] << {id: __method__}
+      form[:steps] << { id: __method__ }
 
       form
     end
@@ -42,7 +39,7 @@ module GoCLI
       print 'Enter your password : '
       form[:password] = gets.chomp
 
-      form[:steps] << {id: __method__}
+      form[:steps] << { id: __method__ }
 
       form
     end
@@ -61,7 +58,7 @@ module GoCLI
       puts
 
       print 'Enter your option : '
-      form[:steps] << {id: __method__, option: gets.chomp}
+      form[:steps] << { id: __method__, option: gets.chomp }
 
       form
     end
@@ -79,13 +76,12 @@ module GoCLI
       puts "Phone    : #{form[:user].phone}"
       puts "Password : #{form[:user].password}"
       puts
-
       puts '1. Edit Profile'
       puts '2. Back'
       puts
 
       print 'Enter your option : '
-      form[:steps] << {id: __method__, option: gets.chomp}
+      form[:steps] << { id: __method__, option: gets.chomp }
 
       form
     end
@@ -116,7 +112,7 @@ module GoCLI
       puts
 
       print 'Enter your option : '
-      form[:steps] << {id: __method__, option: gets.chomp}
+      form[:steps] << { id: __method__, option: gets.chomp }
 
       form
     end
@@ -128,17 +124,20 @@ module GoCLI
       puts 'Order Go-Ride'
       puts
 
-      puts 'All locations must be exist'
-      puts "Sorry if we can't find you a driver"
-      puts
-
       print 'Origin      : '
       form[:origin] = gets.chomp
 
       print 'Destination : '
       form[:destination] = gets.chomp
 
-      form[:steps] << {id: __method__}
+      puts
+      puts '1. Gojek'
+      puts '2. Gocar'
+      puts '3. Cancel'
+      puts
+
+      print 'Enter your option : '
+      form[:steps] << { id: __method__, option: gets.chomp }
 
       form
     end
@@ -147,6 +146,9 @@ module GoCLI
     # This is invoked after user finishes inputting data in order_goride method
     def self.order_goride_confirm(opts = {})
       form = opts
+
+      puts 'Order Confirmation'
+      puts
 
       puts "Origin      : #{form[:order].origin}"
       puts "Destination : #{form[:order].destination}"
@@ -158,13 +160,16 @@ module GoCLI
       puts
 
       print 'Enter your option : '
-      form[:steps] << {id: __method__, option: gets.chomp}
+      form[:steps] << { id: __method__, option: gets.chomp }
 
       form
     end
 
     def self.order_goride_done(opts = {})
       form = opts
+
+      puts 'Order Success'
+      puts
 
       puts "Origin      : #{form[:order].origin}"
       puts "Destination : #{form[:order].destination}"
@@ -175,7 +180,7 @@ module GoCLI
       puts
 
       print 'Enter your option : '
-      form[:steps] << {id: __method__, option: gets.chomp}
+      form[:steps] << { id: __method__, option: gets.chomp }
 
       form
     end
@@ -199,7 +204,7 @@ module GoCLI
       puts
 
       print 'Enter your option : '
-      form[:steps] << {id: __method__, option: gets.chomp}
+      form[:steps] << { id: __method__, option: gets.chomp }
 
       form
     end
