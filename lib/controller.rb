@@ -1,6 +1,7 @@
 require_relative './models/user'
 require_relative './models/order'
 require_relative './models/location'
+require_relative './models/fleet'
 require_relative './view'
 
 module GoCLI
@@ -132,7 +133,7 @@ module GoCLI
       finish = Location.find(form[:destination])
 
       if !start.empty? && !finish.empty?
-        est_price = Location.calc_price(start, finish)
+        est_price = Order.calc_price(start, finish)
 
         order = Order.new(
           origin:      form[:origin],
@@ -159,7 +160,8 @@ module GoCLI
         form = opts
 
         cust = Location.find(form[:origin])
-        driver = Location.find_driver(cust)
+        driver = Fleet.find_driver(cust)
+        dest = Location.find(form[:destination])
 
         if !driver.empty?
           order = Order.new(
@@ -171,10 +173,19 @@ module GoCLI
           )
           order.save!
 
+          fleet = Fleet.new(
+            driver:   driver,
+            location: dest
+          )
+          fleet.move_driver!
+
           form[:order] = order
 
           order_goride_done(form)
-        end
+
+          else
+            order_goride(form)
+          end
 
       when 2
         order_goride(form) # discard
