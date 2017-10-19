@@ -131,11 +131,14 @@ module GoCLI
       form = View.order_goride(opts)
 
       type = ''
+      price = 0
       case form[:steps].last[:option].to_i
       when 1
-        type = 'gojek'
+        type = 'GoJek'
+        price = 1500
       when 2
-        type = 'gocar'
+        type = 'GoCar'
+        price = 2500
       when 3
         main_menu(form)
       else
@@ -147,12 +150,13 @@ module GoCLI
       finish = Location.find(form[:destination])
 
       if !start.empty? && !finish.empty?
-        est_price = Order.calc_price(start, finish)
+        est_price = Order.calc_price(start, finish, price)
 
         order = Order.new(
           origin:      form[:origin],
           destination: form[:destination],
-          est_price:   est_price.round
+          est_price:   est_price.round,
+          type:        type
         )
         form[:order] = order
 
@@ -184,11 +188,13 @@ module GoCLI
             origin:      form[:order].origin,
             destination: form[:order].destination,
             est_price:   form[:order].est_price,
+            type:        form[:order].type,
             driver:      driver
           )
           order.save!
 
           fleet = Fleet.new(
+            type:     form[:order].type,
             driver:   driver,
             location: dest
           )
@@ -199,8 +205,7 @@ module GoCLI
           order_goride_done(form)
 
         else
-          form[:flash_msg] = "Sorry we can't find you a driver"
-          order_goride(form)
+          order_goride_nodriver(form)
         end
 
       when 2
@@ -212,6 +217,21 @@ module GoCLI
       else
         form[:flash_msg] = 'Wrong option entered, please retry'
         order_goride_confirm(form)
+      end
+    end
+
+    def order_goride_nodriver(opts = {})
+      clear_screen(opts)
+      form = View.order_goride_nodriver(opts)
+
+      case form[:steps].last[:option].to_i
+      when 1
+        order_goride(form)
+      when 2
+        main_menu(form)
+      else
+        form[:flash_msg] = 'Wrong option entered, please retry'
+        order_goride_nodriver(form)
       end
     end
 

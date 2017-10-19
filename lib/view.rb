@@ -131,8 +131,8 @@ module GoCLI
       form[:destination] = gets.chomp
 
       puts
-      puts '1. Gojek'
-      puts '2. Gocar'
+      puts '1. GoJek'
+      puts '2. GoCar'
       puts '3. Cancel'
       puts
 
@@ -152,11 +152,28 @@ module GoCLI
 
       puts "Origin      : #{form[:order].origin}"
       puts "Destination : #{form[:order].destination}"
+      puts "Type        : #{form[:order].type}"
       puts "Est Price   : #{form[:order].est_price}"
       puts
       puts '1. Order'
       puts '2. Discard'
-      puts '3. Back'
+      puts '3. Main Menu'
+      puts
+
+      print 'Enter your option : '
+      form[:steps] << { id: __method__, option: gets.chomp }
+
+      form
+    end
+
+    def self.order_goride_nodriver(opts = {})
+      form = opts
+
+      puts "Sorry we can't find you a driver"
+      puts
+
+      puts '1. Try Again'
+      puts '2. Main Menu'
       puts
 
       print 'Enter your option : '
@@ -173,7 +190,8 @@ module GoCLI
 
       puts "Origin      : #{form[:order].origin}"
       puts "Destination : #{form[:order].destination}"
-      puts "Est Price   : #{form[:order].est_price}"
+      puts "Type        : #{form[:order].type}"
+      puts "Price       : #{form[:order].est_price}"
       puts "Driver      : #{form[:order].driver}"
       puts
       puts '1. Back'
@@ -195,7 +213,8 @@ module GoCLI
       form[:order].each do |history|
         puts "Origin      : #{history['origin']}"
         puts "Destination : #{history['destination']}"
-        puts "Est Price   : #{history['est_price']}"
+        puts "Type        : #{history['type']}"
+        puts "Price       : #{history['est_price']}"
         puts "Driver      : #{history['driver']}"
         puts
       end

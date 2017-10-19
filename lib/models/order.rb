@@ -18,8 +18,8 @@ module GoCLI
       JSON.parse(File.read("#{File.expand_path(File.dirname(__FILE__))}/../../data/orders.json"))
     end
 
-    def self.calc_price(start, finish)
-      1500 * Math.sqrt((finish[0] - start[0])**2 + (finish[1] - start[1])**2).to_f
+    def self.calc_price(start, finish, price)
+      price * Math.sqrt((finish[0] - start[0])**2 + (finish[1] - start[1])**2).to_f
     end
 
     def save! # push to array
