@@ -24,7 +24,8 @@ module GoCLI
         name:     form[:name],
         email:    form[:email],
         phone:    form[:phone],
-        password: form[:password]
+        password: form[:password],
+        gopay:    0
       )
       if user.validate
         user.save!
@@ -73,6 +74,8 @@ module GoCLI
         # Step 4.3
         view_order_history(form)
       when 4
+        gopay(form)
+      when 5
         exit(true)
       else
         form[:flash_msg] = 'Wrong option entered, please retry'
@@ -104,21 +107,19 @@ module GoCLI
 
       case form[:steps].last[:option].to_i
       when 1
+        user = User.load
         user = User.new(
           name:     form[:name],
           email:    form[:email],
           phone:    form[:phone],
-          password: form[:password]
+          password: form[:password],
+          gopay:    user.gopay
         )
         user.save!
-
         form[:user] = user
-
-        view_profile(form) # save
-
+        view_profile(form)
       when 2
-        view_profile(form) # discard
-
+        view_profile(form)
       else
         form[:flash_msg] = 'Wrong option entered, please retry'
         edit_profile(form)
@@ -264,6 +265,44 @@ module GoCLI
         form[:flash_msg] = 'Wrong option entered, please retry'
         view_order_history(form)
       end
+    end
+
+    def gopay(opts = {})
+      clear_screen(opts)
+      form = View.gopay(opts)
+
+      case form[:steps].last[:option].to_i
+      when 1
+        topup(form)
+      when 2
+        main_menu(form)
+      else
+        form[:flash_msg] = 'Wrong option entered, please retry'
+        gopay(form)
+      end
+    end
+
+    def topup(opts = {})
+      clear_screen(opts)
+      form = View.topup(opts)
+
+      case form[:steps].last[:option].to_i
+      when 1
+        user = User.load
+        user = User.new(
+          name:     user.name,
+          email:    user.email,
+          phone:    user.phone,
+          password: user.password,
+          gopay:    user.gopay + form[:topup]
+        )
+        user.save!
+        form[:user] = user
+      when 2
+      else
+        form[:flash_msg] = 'Wrong option entered, please retry'
+      end
+      gopay(form)
     end
 
     protected
