@@ -16,6 +16,7 @@ module GoCLI
 
     def self.find(position)
       data = JSON.parse(File.read("#{File.expand_path(File.dirname(__FILE__))}/../../data/locations.json"))
+      coordinate = []
       data.each do |loc|
         if loc.value?(position)
           coordinate = loc['coord']
@@ -30,13 +31,16 @@ module GoCLI
 
     def self.find_driver(cust)
       data = JSON.parse(File.read("#{File.expand_path(File.dirname(__FILE__))}/../../data/fleet_location.json"))
+      fleet = []
+      driver = ''
       data.each do |loc|
         fleet = loc['location']
         if Math.sqrt((fleet[0] - cust[0])**2 + (fleet[1] - cust[1])**2).to_f <= 1.0
-          driver = loc['name']
+          driver = loc['driver']
           break
         end
       end
+      driver
     end
   end
 end

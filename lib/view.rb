@@ -129,6 +129,7 @@ module GoCLI
       puts
 
       puts 'All locations must be exist'
+      puts "Sorry if we can't find you a driver"
       puts
 
       print 'Origin      : '
@@ -162,6 +163,23 @@ module GoCLI
       form
     end
 
+    def self.order_goride_done(opts = {})
+      form = opts
+
+      puts "Origin      : #{form[:order].origin}"
+      puts "Destination : #{form[:order].destination}"
+      puts "Est Price   : #{form[:order].est_price}"
+      puts "Driver      : #{form[:order].driver}"
+      puts
+      puts '1. Back'
+      puts
+
+      print 'Enter your option : '
+      form[:steps] << {id: __method__, option: gets.chomp}
+
+      form
+    end
+
     # TODO: Complete view_order_history method -> DONE!
     def self.view_order_history(opts = {})
       form = opts
@@ -173,6 +191,7 @@ module GoCLI
         puts "Origin      : #{history['origin']}"
         puts "Destination : #{history['destination']}"
         puts "Est Price   : #{history['est_price']}"
+        puts "Driver      : #{history['driver']}"
         puts
       end
 

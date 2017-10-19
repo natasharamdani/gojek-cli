@@ -132,7 +132,6 @@ module GoCLI
       finish = Location.find(form[:destination])
 
       if !start.empty? && !finish.empty?
-
         est_price = Location.calc_price(start, finish)
 
         order = Order.new(
@@ -140,7 +139,6 @@ module GoCLI
           destination: form[:destination],
           est_price:   est_price.round
         )
-
         form[:order] = order
 
         order_goride_confirm(form)
@@ -154,22 +152,29 @@ module GoCLI
     # This will be invoked after user finishes inputting data in order_goride method
     def order_goride_confirm(opts = {})
       clear_screen(opts)
-
       form = View.order_goride_confirm(opts)
 
       case form[:steps].last[:option].to_i
       when 1
-        order = Order.new(
-          timestamp:   '',
-          origin:      form[:order].origin,
-          destination: form[:order].destination,
-          est_price:   form[:order].est_price
-        )
-        order.save!
+        form = opts
 
-        form[:order] = order
+        cust = Location.find(form[:origin])
+        driver = Location.find_driver(cust)
 
-        main_menu(form)
+        if !driver.empty?
+          order = Order.new(
+            timestamp:   '',
+            origin:      form[:order].origin,
+            destination: form[:order].destination,
+            est_price:   form[:order].est_price,
+            driver:      driver
+          )
+          order.save!
+
+          form[:order] = order
+
+          order_goride_done(form)
+        end
 
       when 2
         order_goride(form) # discard
@@ -180,6 +185,19 @@ module GoCLI
       else
         form[:flash_msg] = "Wrong option entered, please retry."
         order_goride(form)
+      end
+    end
+
+    def order_goride_done(opts = {})
+      clear_screen(opts)
+      form = View.order_goride_done(opts)
+
+      case form[:steps].last[:option].to_i
+      when 1
+        main_menu(form)
+      else
+        form[:flash_msg] = "Wrong option entered, please retry."
+        order_goride_done(form)
       end
     end
 
