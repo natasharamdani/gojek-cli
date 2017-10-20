@@ -2,6 +2,7 @@ require_relative './models/user'
 require_relative './models/order'
 require_relative './models/location'
 require_relative './models/fleet'
+require_relative './models/promo'
 require_relative './view'
 
 module GoCLI
@@ -203,21 +204,46 @@ module GoCLI
 
           form[:order] = order
 
-          order_goride_done(form)
+          payment(form)
 
         else
           order_goride_nodriver(form)
         end
 
       when 2
-        order_goride(form) # discard
+        order_goride(form)
 
       when 3
-        main_menu(form) # back
+        main_menu(form)
 
       else
         form[:flash_msg] = 'Wrong option entered, please retry'
         order_goride_confirm(form)
+      end
+    end
+
+    def payment(opts = {})
+      clear_screen(opts)
+      form = View.payment(opts)
+
+      case form[:steps].last[:option].to_i
+      when 1
+        order_goride_done(form)
+      when 2
+        user = User.load
+        user = User.new(
+          name:     user.name,
+          email:    user.email,
+          phone:    user.phone,
+          password: user.password,
+          gopay:    user.gopay - form[:order].est_price
+        )
+        user.save!
+        form[:user] = user
+        order_goride_done(form)
+      else
+        form[:flash_msg] = 'Wrong option entered, please retry'
+        payment(form)
       end
     end
 

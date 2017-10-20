@@ -151,14 +151,35 @@ module GoCLI
       puts 'Order Confirmation'
       puts
 
-      puts "Origin      : #{form[:order].origin}"
-      puts "Destination : #{form[:order].destination}"
-      puts "Type        : #{form[:order].type}"
-      puts "Est Price   : #{form[:order].est_price}"
+      puts "Origin       : #{form[:order].origin}"
+      puts "Destination  : #{form[:order].destination}"
+      puts "Type         : #{form[:order].type}"
+      puts "Est Price    : #{form[:order].est_price}"
+      puts
+
+      print 'Voucher Code : '
+      form[:code] = gets.chomp
+
       puts
       puts '1. Order'
-      puts '2. Discard'
+      puts '2. Cancel'
       puts '3. Main Menu'
+      puts
+
+      print 'Enter your option : '
+      form[:steps] << { id: __method__, option: gets.chomp }
+
+      form
+    end
+
+    def self.payment(opts = {})
+      form = opts
+
+      puts 'Payment'
+      puts
+
+      puts '1. Cash'
+      puts '2. Go-Pay'
       puts
 
       print 'Enter your option : '
@@ -194,6 +215,8 @@ module GoCLI
       puts "Type        : #{form[:order].type}"
       puts "Price       : #{form[:order].est_price}"
       puts "Driver      : #{form[:order].driver}"
+      puts
+      puts "Balance     : #{form[:user].gopay}"
       puts
       puts '1. Back'
       puts

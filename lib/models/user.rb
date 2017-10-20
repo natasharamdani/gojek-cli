@@ -22,7 +22,7 @@ module GoCLI
       return nil unless File.file?(filename)
       data = JSON.parse(File.read(filename))
 
-      self.new(
+      new(
         name:     data['name'],
         email:    data['email'],
         phone:    data['phone'],
@@ -33,6 +33,10 @@ module GoCLI
 
     # TODO: Add your validation method here -> DONE!
     def validate
+      !@name.empty? && !@email.empty? && !@phone.empty? && !@password.empty?
+    end
+
+    def validate_gopay
       !@name.empty? && !@email.empty? && !@phone.empty? && !@password.empty?
     end
 
