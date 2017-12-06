@@ -1,0 +1,16 @@
+GEM
+  specs:
+    ffi (1.9.18)
+    mini_portile2 (2.3.0)
+    rdkafka (0.3.3)
+      ffi (~> 1.9)
+      mini_portile2 (~> 2.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  rdkafka
+
+BUNDLED WITH
+   1.15.4

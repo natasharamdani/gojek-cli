@@ -29,6 +29,27 @@ module GoCLI
       File.open("#{File.expand_path(File.dirname(__FILE__))}/../../data/orders.json", 'w') do |f|
         f.write JSON.generate(data)
       end
+
+      require 'bundler/setup'
+      require 'rdkafka'
+
+      config = {
+                :"bootstrap.servers" => "velomobile-01.srvs.cloudkafka.com:9094, velomobile-02.srvs.cloudkafka.com:9094, velomobile-03.srvs.cloudkafka.com:9094",
+                :"group.id"          => "go-cli",
+                :"sasl.username"     => "akz986mn",
+                :"sasl.password"     => "_VHudUAXaBKVQiy3_sbRmy6GexAQkRCT",
+                :"security.protocol" => "SASL_SSL",
+                :"sasl.mechanisms"   => "SCRAM-SHA-256"
+      }
+      topic = "akz986mn-go-cli"
+
+      rdkafka = Rdkafka::Config.new(config)
+      producer = rdkafka.producer
+
+      producer.produce(
+          topic:   topic,
+          payload: JSON.generate(order)
+      )
     end
   end
 end
